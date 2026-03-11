@@ -1,0 +1,9 @@
+{
+  "name": "NEXU AI Portfolio",
+  "description": "High-end portfolio for NEXU AI, offering consultancy in Generative AI, Python, and SharePoint, featuring a restricted client portal with live Gemini POCs.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
