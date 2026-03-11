@@ -1,14 +1,17 @@
 import { GoogleGenAI, LiveServerMessage, Modality, Type } from "@google/genai";
 
-// Ensure API Key is available
-const API_KEY = process.env.API_KEY || '';
-
-// Singleton instance (Legacy/Default)
-export const ai = new GoogleGenAI({ apiKey: API_KEY });
+const getApiKey = (apiKey?: string) => {
+  return apiKey || process.env.API_KEY || process.env.GEMINI_API_KEY || '';
+};
 
 // Helper to get a fresh client (crucial for picking up API keys selected at runtime)
 const getClient = (apiKey?: string) => {
-  return new GoogleGenAI({ apiKey: apiKey || process.env.API_KEY || '' });
+  const resolvedKey = getApiKey(apiKey);
+  if (!resolvedKey) {
+    throw new Error('Missing Gemini API key. Configure GEMINI_API_KEY in environment variables.');
+  }
+
+  return new GoogleGenAI({ apiKey: resolvedKey });
 };
 
 // --- Chat Service ---
@@ -118,8 +121,13 @@ export const generateVeoVideo = async (
   aspectRatio: '16:9' | '9:16' = '16:9',
   imageBytes?: string
 ) => {
+  const resolvedVideoKey = getApiKey(videoKey);
+  if (!resolvedVideoKey) {
+    throw new Error('Missing Gemini API key for Veo generation.');
+  }
+
   // Create a specific instance with the selected key
-  const veoAi = new GoogleGenAI({ apiKey: videoKey });
+  const veoAi = new GoogleGenAI({ apiKey: resolvedVideoKey });
 
   let operation;
   
